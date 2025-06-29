@@ -41,3 +41,67 @@ A maioria dos scripts depende apenas de ferramentas comuns disponíveis nos repo
 ```bash
 git clone git@github.com:devSecOps85/LinuxScripts.git
 cd LinuxScripts
+```
+
+# Script `remove-orfaos.sh`
+
+O `pacman` **pacotes órfãos** usando o comando:
+
+```bash
+pacman -Qdt
+````
+
+Esse comando lista os pacotes **instalados como dependência** (`-Qd`) que **não são mais necessários por nenhum outro pacote** (`-t` de "unrequired").
+
+---
+
+1. Quando você instala um pacote com `pacman -S`, ele é marcado como **explicitamente instalado**.
+2. Quando outro pacote é instalado como **dependência**, ele é marcado como **instalado como dependência**.
+3. Se nenhum pacote **depende mais** de uma dependência instalada, ela **vira órfã**.
+
+
+#### ✅ Pode confiar se:
+
+* Você **nunca instala bibliotecas manualmente** (ex: `pacman -S libfoo` só porque quer).
+* O sistema foi mantido de forma limpa, sem alterações manuais nos flags de instalação (`explicit` vs `dependency`).
+
+#### ⚠️ Tome cuidado se:
+
+* Você instalou algum **pacote como dependência** manualmente (por exemplo, `pacman -S ffmpeg-libs`), e ele agora aparece como órfão.
+* Alguns pacotes são **usados por scripts ou softwares externos** que não são empacotados com dependências explícitas no `pacman`.
+
+---
+
+### 💡 Como verificar se um pacote tem dependentes?
+
+Antes de remover um pacote órfão, você pode verificar com:
+
+```bash
+pactree -r <pacote>
+```
+
+Isso mostra **quem depende** daquele pacote. Se não retornar nada, ele é um candidato real à remoção.
+
+Exemplo:
+
+```bash
+pactree -r libxcrypt
+```
+
+Se nada depender, é seguro remover (teoricamente).
+
+---
+
+### ✅ Dica final
+
+Para listar e confirmar *antes de remover*, use:
+
+```bash
+pacman -Qdtq | while read pkg; do
+  echo "----- $pkg -----"
+  pactree -r "$pkg"
+done
+```
+
+
+
