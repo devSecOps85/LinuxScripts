@@ -30,15 +30,27 @@ for pkt in $orfaos; do
 #  echo "🔍 Informações sobre o pacote: $pkt"
 #  pacman -Qi "$pkt"
 #  echo
-  read -p "Deseja remover este pacote: $pkt'? [s/N]: " escolha
 
-  if [[ "$escolha" == "s" || "$escolha" == "S" ]]; then
-    sudo pacman -R "$pkt"
+echo "---------------------------------------------------"
+  echo "🔍 Verificando dependências de: $pkt"
+  
+  dependentes=$(pactree -r "$pkt" | sed '1d')  # Remove a primeira linha (o próprio pacote)
+
+  if [[ -z "$dependentes" ]]; then
+    echo " Nenhum pacote depende de '$pkt'."
+    read -p "Deseja remover este pacote? [s/N]: " escolha
+    if [[ "$escolha" == "s" || "$escolha" == "S" ]]; then
+      sudo pacman -R "$pkt"
+    else
+      echo "⏭  Ignorando $pkt"
+    fi
   else
-    echo "⏭️  Ignorando $pkt"
+    echo " Outros pacotes dependem de '$pkt':"
+    echo "$dependentes"
+    echo " Não será removido."
   fi
   echo
 done
 
-echo "✅ Concluído."
+echo " Concluído."
 
