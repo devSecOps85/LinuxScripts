@@ -40,7 +40,7 @@ echo "---------------------------------------------------"
     echo " Nenhum pacote depende de '$pkt'."
     read -p "Deseja remover este pacote? [s/N]: " escolha
     if [[ "$escolha" == "s" || "$escolha" == "S" ]]; then
-      sudo pacman -R "$pkt"
+      sudo pacman -Rns "$pkt"
     else
       echo "⏭  Ignorando $pkt"
     fi
