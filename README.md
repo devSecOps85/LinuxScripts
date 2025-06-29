@@ -1,0 +1,1 @@
+### Script para limpeza de pacotes desnecessários no Arch Linux
