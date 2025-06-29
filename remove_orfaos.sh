@@ -33,7 +33,7 @@ for pkt in $orfaos; do
   read -p "Deseja remover este pacote: $pkt'? [s/N]: " escolha
 
   if [[ "$escolha" == "s" || "$escolha" == "S" ]]; then
-    sudo pacman -Rns "$pkt"
+    sudo pacman -R "$pkt"
   else
     echo "⏭️  Ignorando $pkt"
   fi
